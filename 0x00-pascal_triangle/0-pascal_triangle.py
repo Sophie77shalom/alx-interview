@@ -1,4 +1,9 @@
+#!/usr/bin/python3
+ 
+
+
 def pascal_triangle(n):
+     
     res = []
     if n > 0:
         for i in range(1, n + 1):
