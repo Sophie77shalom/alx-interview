@@ -1,9 +1,11 @@
 #!/usr/bin/python3
- 
+"""
+0. Pascal's Triangle
+"""
 
 
 def pascal_triangle(n):
-     
+    
     res = []
     if n > 0:
         for i in range(1, n + 1):
