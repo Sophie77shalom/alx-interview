@@ -1,54 +1,52 @@
 #!/usr/bin/python3
-
+"""
+script that reads stdin line by line and computes metrics
+"""
 import sys
 
 
-def print_msg(dict_sc, total_file_size):
+def print_stats(total_size, status_codes):
     """
-    Method to print
-    Args:
-        dict_sc:
-        total_file_size: 
-    Returns:
-        Nothing
+    stats code
     """
+    print("File size: {}".format(total_size))
+    sorted_status_codes = sorted(status_codes.keys())
+    for code in sorted_status_codes:
+        count = status_codes[code]
+        print("{}: {}".format(code, count))
 
-    print("File size: {}".format(total_file_size))
-    for key, val in sorted(dict_sc.items()):
-        if val != 0:
-            print("{}: {}".format(key, val))
+
+def process_logs():
+    """
+    logs
+    """
+    total_size = 0
+    status_codes = {}
+
+    try:
+        line_count = 0
+        for line in sys.stdin:
+            line_count += 1
+            if line_count > 10:
+                print_stats(total_size, status_codes)
+                line_count = 1
+
+            parts = line.split()
+            if len(parts) != 9:
+                continue
+            try:
+                size = int(parts[-1])
+            except ValueError:
+                continue
+
+            total_size += size
+            status_codes[parts[-2]] = status_codes.get(parts[-2], 0) + 1
+
+    except KeyboardInterrupt:
+        pass
+
+    print_stats(total_size, status_codes)
 
 
-total_file_size = 0
-code = 0
-counter = 0
-dict_sc = {"200": 0,
-           "301": 0,
-           "400": 0,
-           "401": 0,
-           "403": 0,
-           "404": 0,
-           "405": 0,
-           "500": 0}
-
-try:
-    for line in sys.stdin:
-        parsed_line = line.split()  # ✄ trimming
-        parsed_line = parsed_line[::-1]  # inverting
-
-        if len(parsed_line) > 2:
-            counter += 1
-
-            if counter <= 10:
-                total_file_size += int(parsed_line[0])  # file size
-                code = parsed_line[1]  # status code
-
-                if (code in dict_sc.keys()):
-                    dict_sc[code] += 1
-
-            if (counter == 10):
-                print_msg(dict_sc, total_file_size)
-                counter = 0
-
-finally:
-    print_msg(dict_sc, total_file_size)
+if __name__ == "__main__":
+    process_logs()
