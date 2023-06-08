@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """
-Rotate  
+ Rotate it 90 degrees clockwise
 """
 
 
